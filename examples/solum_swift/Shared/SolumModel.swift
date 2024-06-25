@@ -9,7 +9,7 @@ import Foundation
 import CoreGraphics
 
 enum ParameterType: UInt32, CaseIterable {
-    case imageDepth = 0, gain, autoGain
+    case imageDepth = 0, gain, autoGain, imuStreaming = 22
 }
 
 enum PlatformType: UInt32 {
