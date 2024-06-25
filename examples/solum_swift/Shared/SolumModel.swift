@@ -161,6 +161,7 @@ class SolumModel: ObservableObject {
         solum.initialize(appSupportPath) { (result: Bool) -> Void in
             print("Initialization \(result ? "succeeded" : "failed")")
         }
+        solum.setFormat(CusImageFormat(1))
         // Get the available probe models
         let types = solum.probes()
         scannerTypes = types
@@ -189,10 +190,10 @@ class SolumModel: ObservableObject {
             let rawBytes = UnsafeMutableRawPointer.allocate(byteCount: totalBytes, alignment: 1)
             let bmpInfo = CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
             imageData.copyBytes(to: UnsafeMutableRawBufferPointer(start: rawBytes, count: totalBytes))
-            guard let colorspace = CGColorSpace(name: CGColorSpace.sRGB) else {
+            guard let colorspace = CGColorSpace(name: CGColorSpace.linearGray) else { 
                 return
             }
-            guard let ctxt = CGContext(data: rawBytes, width: Int(nfo.width), height: Int(nfo.height), bitsPerComponent: 8, bytesPerRow: Int(rowBytes), space: colorspace, bitmapInfo: bmpInfo) else {
+            guard let ctxt = CGContext(data: rawBytes, width: Int(nfo.width), height: Int(nfo.height), bitsPerComponent: 8, bytesPerRow: Int(rowBytes), space: colorspace, bitmapInfo: 0) else {
                 return
             }
             self.image = ctxt.makeImage()
