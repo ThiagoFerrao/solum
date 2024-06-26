@@ -201,6 +201,9 @@ class SolumModel: ObservableObject {
             let rowBytes = nfo.width * nfo.bitsPerPixel / 8
             let totalBytes = Int(nfo.height * rowBytes)
             let rawBytes = UnsafeMutableRawPointer.allocate(byteCount: totalBytes, alignment: 1)
+            defer {
+                rawBytes.deallocate()
+            }
             let bmpInfo = CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
             imageData.copyBytes(to: UnsafeMutableRawBufferPointer(start: rawBytes, count: totalBytes))
             guard let colorspace = CGColorSpace(name: CGColorSpace.linearGray) else { 
