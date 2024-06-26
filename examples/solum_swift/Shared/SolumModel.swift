@@ -188,7 +188,7 @@ class SolumModel: ObservableObject {
                     self.solum.getStatus { statusPtr in
                         if let statusPtr, Int(bitPattern: statusPtr) != 0 {
                             let status = statusPtr.pointee
-                            print("CusStatusInfo", status.fan)
+                            print("CusStatusInfo", status)
                         }
                     }
                 }
