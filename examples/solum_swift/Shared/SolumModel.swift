@@ -30,6 +30,7 @@ enum PlatformType: UInt32 {
 /// Class to wrap the Solum framework for Swift
 class SolumModel: ObservableObject {
 
+    private var probeInfoTimer: Timer?
     /// Available scanner types (model names)
     @Published var scannerTypes: [String]
     /// Available application IDs for the current scanner type
@@ -176,9 +177,21 @@ class SolumModel: ObservableObject {
             print("Solum is \(status) at \(listenPort): \(message)")
             if status == ProbeDisconnected {
                 self.updateRequired = false
+                self.probeInfoTimer?.invalidate()
+                self.probeInfoTimer = nil
             }
             if status == SwUpdateRequired {
                 self.updateRequired = true
+            }
+            if status == ProbeConnected {
+                self.probeInfoTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+                    self.solum.getStatus { statusPtr in
+                        if let statusPtr, Int(bitPattern: statusPtr) != 0 {
+                            let status = statusPtr.pointee
+                            print("CusStatusInfo", status.fan)
+                        }
+                    }
+                }
             }
         })
         // New images calblack
